@@ -1,0 +1,14 @@
+# 로컬 개발/테스트용. 배포 서버에는 설치하지 않는다.
+#   pip install -r requirements-dev.txt
+-r requirements.txt
+
+# 로컬 YOLO 폴백 + 학습 결과 검증 (opencv·pandas·torchvision 등을 함께 끌고 온다)
+ultralytics
+
+# 테스트 / 외부 공유
+pytest
+pyngrok
+
+# 로컬 LLM 문장화 (GPU 필요 — 클라우드에선 어차피 못 씀)
+transformers
+accelerate

@@ -1,4 +1,8 @@
-# 리눅스 배포 환경에서 torch 를 CPU 휠로 받는다 (기본 PyPI 휠은 CUDA 포함 ~2.5GB).
+# 배포 런타임 최소 세트 (Streamlit Cloud 등).
+# 개발/테스트용 도구는 requirements-dev.txt 로 분리했다 — 클라우드에서 같이 설치하면
+# 디스크·메모리 한도에 걸려 빌드가 멈춘다.
+#
+# 리눅스에서 torch 를 CPU 휠로 받는다 (기본 PyPI 휠은 CUDA 포함 ~2.5GB).
 # macOS/Windows 에는 영향 없음 — 없는 휠은 PyPI 에서 그대로 받는다.
 --extra-index-url https://download.pytorch.org/whl/cpu
 
@@ -11,17 +15,11 @@ scipy
 networkx
 reportlab
 requests
-# 모델 사용 시 (학습/추론)
+
+# 분류 모델 (Swin) — 이게 있어야 94% 정확도가 나온다
 torch
 timm
-ultralytics
-# Superb 연동 시 — SDK는 Python >= 3.12 필요.
-# 그 미만이면 설치하지 않아도 됨(superb_client.py가 requests REST 폴백으로 동작).
+
+# Superb 연동 — SDK는 Python >= 3.12 필요.
+# 그 미만이면 설치하지 않아도 됨(superb_client.py 가 requests REST 폴백으로 동작).
 superb-ai; python_version >= "3.12"
-# 외부 공유(선택) — python3 share.py
-pyngrok
-# 테스트(선택) — python3 -m pytest tests
-pytest
-# 로컬 LLM 리포트(선택)
-transformers
-accelerate
