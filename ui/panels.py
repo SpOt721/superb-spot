@@ -34,6 +34,21 @@ def status_badges(status: dict, dep: dict) -> str:
     return f"{b_sb} · {b_dp} · {b_yo} · {b_cl}"
 
 
+def weights_hint(weights: dict) -> str:
+    """
+    가중치가 왜 없는지 배지 옆에 한 줄로. 'best.pt 없음' 만으로는
+    URL 미설정인지 다운로드 실패인지 구분되지 않아 배포 디버깅이 어렵다.
+    """
+    env_of = {"swin_multilabel.pt": "WAFER_CLS_URL", "best.pt": "WAFER_DET_URL"}
+    msgs = []
+    for name, state in (weights or {}).items():
+        if state == "skipped":
+            msgs.append(f"{name}: {env_of.get(name, 'URL')} 미설정")
+        elif str(state).startswith("failed"):
+            msgs.append(f"{name}: 다운로드 실패 {state[7:-1]}")
+    return ("  ·  ⚠️ " + " / ".join(msgs)) if msgs else ""
+
+
 def render_header(badges: str):
     """제목 + 부제 + 우측 상단 화면 밀도/PDF 슬롯. 반환된 슬롯을 분석 후 채운다."""
     h1, h2 = st.columns([4, 1])          # 제목이 한 줄에 들어가도록 넓게

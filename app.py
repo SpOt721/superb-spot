@@ -36,15 +36,22 @@ setup_page(MODE)
 
 # 배포 환경용: 가중치가 없고 WAFER_*_URL 이 설정돼 있으면 최초 1회 내려받는다.
 # (로컬은 파일이 이미 있으므로 no-op) — models.* 를 처음 호출하기 전에 실행해야 한다.
+# 결과를 stdout 에 남긴다: 배포 로그에서 'skipped'(URL 없음) / 'failed'(URL 오류) /
+# 'downloaded' 를 구분할 수 있어야 원인을 찾을 수 있다.
 @st.cache_resource(show_spinner="모델 가중치 준비 중…")
 def _ensure_weights():
     try:
-        return models.ensure_weights()
+        res = models.ensure_weights()
     except Exception as e:
-        return {"error": str(e)}
+        res = {"error": str(e)}
+    print("[weights]", ", ".join(f"{k}={v}" for k, v in res.items()), flush=True)
+    for name, url_key in (("swin_multilabel.pt", "WAFER_CLS_URL"), ("best.pt", "WAFER_DET_URL")):
+        if res.get(name) == "skipped":
+            print(f"[weights] {name} 없음 — {url_key} 환경변수/Secrets 가 비어 있습니다.", flush=True)
+    return res
 
 
-_ensure_weights()
+WEIGHTS = _ensure_weights()
 
 # ---------------------------- 상태 ----------------------------
 st.session_state.setdefault("asset_id", None)
@@ -60,7 +67,7 @@ S = superb_status()
 dep = S.get("deployment") or {}
 
 # ---------------------------- 화면 뼈대 ----------------------------
-pdf_slot = panels.render_header(panels.status_badges(S, dep))
+pdf_slot = panels.render_header(panels.status_badges(S, dep) + panels.weights_hint(WEIGHTS))
 left_box, center_box, right_box = panels.make_columns(SZ["col_h"])
 
 ctl = panels.render_input(left_box, dep)
