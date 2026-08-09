@@ -1,6 +1,6 @@
 # CI 전용 — 학습 가중치가 없는 환경에서 테스트/부팅만 검증하는 가벼운 세트.
 # torch / timm / ultralytics 는 제외 (모델 의존 테스트는 자동 skip).
-streamlit>=1.30
+streamlit>=1.50
 plotly
 numpy
 pillow

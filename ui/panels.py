@@ -45,7 +45,7 @@ def render_header(badges: str):
         st.markdown('<div style="height:1.6rem"></div>', unsafe_allow_html=True)   # 커진 제목과 수직 정렬
         _render_layout_picker()
         pdf_slot = st.empty()
-        pdf_slot.button("📥 PDF 리포트 다운로드", disabled=True, use_container_width=True)
+        pdf_slot.button("📥 PDF 리포트 다운로드", disabled=True, width="stretch")
     st.caption(badges)
     st.divider()
     return pdf_slot
@@ -55,7 +55,7 @@ def _render_layout_picker():
     """화면 밀도 선택 — 넓은 모니터에서 3열이 과하게 벌어지는 걸 조절한다."""
     st.session_state.setdefault(MODE_KEY, DEFAULT_MODE)
     options = list(LAYOUT_MODES)
-    with st.popover(f"🖥️ 화면: {st.session_state[MODE_KEY]}", use_container_width=True):
+    with st.popover(f"🖥️ 화면: {st.session_state[MODE_KEY]}", width="stretch"):
         picker = getattr(st, "segmented_control", None)     # 구버전 Streamlit 폴백
         if picker:
             picker("화면 밀도", options, key=MODE_KEY, selection_mode="single")
@@ -135,7 +135,7 @@ def render_center(box):
         plot_slot = st.empty()
         caption_slot = st.empty()
         run = st.button("🔍 웨이퍼 결함 및 주파수 분석 시작",
-                        use_container_width=True, type="primary")
+                        width="stretch", type="primary")
     return plot_slot, caption_slot, run
 
 
@@ -180,7 +180,7 @@ def render_report(box, R: dict, proc_override: str, report_h: int = REPORT_H):
         st.divider()
         sub("🔁 AI 판단 강제 수정 (액티브 러닝)")
         corrected = st.multiselect("실제 결함 패턴으로 수정", models.LABELS, default=preds)
-        clicked = st.button("피드백 전송", use_container_width=True)
+        clicked = st.button("피드백 전송", width="stretch")
     return corrected, clicked
 
 

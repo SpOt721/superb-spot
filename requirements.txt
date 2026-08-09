@@ -6,7 +6,8 @@
 # macOS/Windows 에는 영향 없음 — 없는 휠은 PyPI 에서 그대로 받는다.
 --extra-index-url https://download.pytorch.org/whl/cpu
 
-streamlit>=1.30
+# 버튼/팝오버의 width="stretch" 는 1.50 부터 (이전 use_container_width 는 폐기 예정)
+streamlit>=1.50
 plotly
 numpy
 pillow

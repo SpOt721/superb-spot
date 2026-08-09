@@ -107,12 +107,11 @@ R = st.session_state.result
 
 # ---------------------------- 중앙 플롯 (F-02) ----------------------------
 if R:
-    plot_slot.plotly_chart(wafer_figure(R["img"], R["boxes"], SZ["plot_h"]),
-                           use_container_width=True)
+    plot_slot.plotly_chart(wafer_figure(R["img"], R["boxes"], SZ["plot_h"]))
     caption_slot.caption(f"탐지 소스: {R['dsrc']} · Bounding Box {len(R['boxes'])}개"
                          + (f" · {R['note']}" if R.get("note") else ""))
 elif img is not None:
-    plot_slot.plotly_chart(wafer_figure(img, height=SZ["plot_h"]), use_container_width=True)
+    plot_slot.plotly_chart(wafer_figure(img, height=SZ["plot_h"]))
     caption_slot.caption(f"미리보기 · {note} — [분석 시작]을 누르면 결함을 탐지합니다.")
 else:
     plot_slot.info("좌측에서 웨이퍼 맵 이미지(.png/.jpg) 또는 MixedWM38 .npz 를 업로드하세요.")
@@ -137,15 +136,14 @@ if R:
                   gr.report(final_preds, confidence=R["conf"], use_llm=False),
                   panels.resolve_process(final_preds, ctl["proc_override"]),
                   final_preds, R["scores"], R["dsrc"]),
-        file_name="wafer_report.pdf", mime="application/pdf", use_container_width=True)
+        file_name="wafer_report.pdf", mime="application/pdf", width="stretch")
 
 # ---------------------------- 하단: 3D 주파수 (F-03) ----------------------------
 st.divider()
 sec("⬇️ 3D 공간 주파수 입체 히트맵 (FFT Surface)")
 sub("2D FFT ➜ 3D 공간 주파수 Surface 시각화")
 if R or img is not None:
-    st.plotly_chart(fft_surface_3d(R["img"] if R else img, SZ["fft_h"]),
-                    use_container_width=True)
+    st.plotly_chart(fft_surface_3d(R["img"] if R else img, SZ["fft_h"]))
     st.caption("규칙적 패턴일수록 특정 주파수에 에너지가 집중됩니다 · 드래그로 회전, 스크롤로 확대")
 else:
     st.info("웨이퍼 맵을 업로드하면 2D FFT 기반 3D 주파수 표면이 여기에 표시됩니다.")
