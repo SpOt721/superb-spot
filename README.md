@@ -2,6 +2,14 @@
 
 MixedWM38 웨이퍼 결함 **탐지 + 다중라벨 분류 + Graph-RAG 원인 역추적** 통합 데모.
 
+> **데이터 출처**: MixedWM38 — [Junliangwangdhu/WaferMap](https://github.com/Junliangwangdhu/WaferMap)
+> J. Wang, C. Xu, Z. Yang, J. Zhang, X. Li, *Deformable Convolutional Networks for Efficient
+> Mixed-type Wafer Defect Pattern Recognition*, IEEE Trans. Semiconductor Manufacturing, 2020.
+> [DOI 10.1109/TSM.2020.3020985](https://doi.org/10.1109/TSM.2020.3020985) · 연구·교육 목적 사용
+>
+> 사용한 오픈소스와 라이선스 전체 목록은 [NOTICE.md](NOTICE.md) 참고.
+> **Ultralytics YOLOv8 은 AGPL-3.0** 이므로 공개 서비스 배포 시 주의가 필요합니다(NOTICE.md 참고).
+
 ## 구성
 | 파일 | 역할 |
 |---|---|

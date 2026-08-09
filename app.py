@@ -154,3 +154,17 @@ if R or img is not None:
     st.caption("규칙적 패턴일수록 특정 주파수에 에너지가 집중됩니다 · 드래그로 회전, 스크롤로 확대")
 else:
     st.info("웨이퍼 맵을 업로드하면 2D FFT 기반 3D 주파수 표면이 여기에 표시됩니다.")
+
+# ---------------------------- 출처 표기 (NOTICE.md 참고) ----------------------------
+st.divider()
+st.caption(
+    "**데이터셋** MixedWM38 — "
+    "[Junliangwangdhu/WaferMap](https://github.com/Junliangwangdhu/WaferMap) · "
+    "J. Wang, C. Xu, Z. Yang, J. Zhang, X. Li, "
+    "*Deformable Convolutional Networks for Efficient Mixed-type Wafer Defect Pattern Recognition*, "
+    "IEEE Trans. Semiconductor Manufacturing, 2020 "
+    "([10.1109/TSM.2020.3020985](https://doi.org/10.1109/TSM.2020.3020985)) · 연구·교육 목적 사용")
+st.caption(
+    "**오픈소스** Ultralytics YOLOv8 (AGPL-3.0) · PyTorch (BSD-3) · timm (Apache-2.0) · "
+    "Streamlit (Apache-2.0) · Plotly (MIT) · ReportLab (BSD) — "
+    "전체 목록과 소스: [NOTICE.md](https://github.com/SpOt721/superb-spot/blob/main/NOTICE.md)")
