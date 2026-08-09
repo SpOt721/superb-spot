@@ -2,9 +2,6 @@
 #   pip install -r requirements-dev.txt
 -r requirements.txt
 
-# 로컬 YOLO 폴백 + 학습 결과 검증 (opencv·pandas·torchvision 등을 함께 끌고 온다)
-ultralytics
-
 # 테스트 / 외부 공유
 pytest
 pyngrok

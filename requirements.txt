@@ -21,6 +21,10 @@ requests
 torch
 timm
 
+# 탐지 모델 (YOLOv8) — torchvision 은 timm 이 이미 끌고 오므로 추가 비용은 opencv 정도.
+# 클라우드 메모리가 빠듯하면 이 줄만 지우면 된다 (탐지는 Superb 배포모델이 대신함).
+ultralytics
+
 # Superb 연동 — SDK는 Python >= 3.12 필요.
 # 그 미만이면 설치하지 않아도 됨(superb_client.py 가 requests REST 폴백으로 동작).
 superb-ai; python_version >= "3.12"
