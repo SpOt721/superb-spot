@@ -1,6 +1,7 @@
 """앱 전 구간(리포트·PDF·시각화) + 샘플 생성기 단위테스트."""
 from __future__ import annotations
 import csv
+import re
 import logging
 import os
 
@@ -151,6 +152,33 @@ def test_차트_높이를_인자로_바꿀_수_있다(wafer_img):
 def models_theme_plot_h():
     from ui.theme import PLOT_H
     return PLOT_H
+
+
+# ---------------- 배포 설정 파일 ----------------
+def test_packages_txt_는_주석_없이_패키지명만():
+    """
+    Streamlit Cloud 는 packages.txt 의 '모든 줄'을 apt-get install 에 그대로 넘긴다.
+    주석(#)이나 설명을 넣으면 패키지 이름으로 해석돼 배포가 통째로 실패한다.
+    (실제로 한글 주석을 넣었다가 'E: Unable to locate package 폰트' 로 죽은 적 있음)
+    """
+    import re
+    path = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))),
+                        "packages.txt")
+    for i, raw in enumerate(open(path, encoding="utf-8"), 1):
+        line = raw.rstrip("\n")
+        if not line:
+            continue
+        assert not line.startswith("#"), f"{i}행: packages.txt 는 주석을 지원하지 않음 — {line!r}"
+        assert re.fullmatch(r"[a-z0-9][a-z0-9+.\-]*", line), \
+            f"{i}행: apt 패키지명이 아님 — {line!r}"
+
+
+def test_requirements_는_배포에_불필요한_도구를_담지_않는다():
+    """개발 도구가 배포 세트에 섞이면 클라우드 빌드가 무거워져 멈춘다."""
+    root = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+    req = open(os.path.join(root, "requirements.txt"), encoding="utf-8").read()
+    for pkg in ("pytest", "pyngrok", "transformers", "accelerate"):
+        assert not re.search(rf"^{pkg}\b", req, re.M), f"{pkg} 는 requirements-dev.txt 로"
 
 
 # ---------------- 파일 검증 (F-06) ----------------

@@ -1,7 +1,2 @@
-# Streamlit Cloud 가 apt-get 으로 설치하는 시스템 패키지.
-#   fonts-nanum : PDF 리포트 한글 폰트
-#   libgl1      : ultralytics → opencv 가 요구하는 libGL.so.1
-# 주의: libglib2.0-0 은 이 이미지(Debian 11)에서 libffi7/libpcre3 의존성이
-#       깨져 설치 실패하므로 넣지 말 것.
 fonts-nanum
 libgl1
