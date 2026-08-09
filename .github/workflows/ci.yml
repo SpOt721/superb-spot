@@ -1,0 +1,85 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+
+      # PDF 리포트의 한글 폰트 (배포 환경과 동일한 경로를 만들어 준다)
+      - name: 한글 폰트 설치
+        run: sudo apt-get update -qq && sudo apt-get install -y -qq fonts-nanum
+
+      # 학습 가중치(torch/ultralytics)는 레포에 없으므로 가벼운 세트만 설치한다.
+      # 모델이 필요한 테스트는 자동으로 skip 되고, 나머지는 전부 검증된다.
+      - name: Install
+        run: pip install -r requirements-ci.txt
+
+      # 문법 오류 / 정의되지 않은 이름만 잡는다 (스타일은 강제하지 않음).
+      # app.py 의 재export(F401)는 의도된 것이라 대상에서 제외.
+      - name: Lint
+        run: |
+          pip install ruff
+          ruff check . --select E9,F63,F7,F82
+
+      # 테스트는 로컬 목 HTTP 서버만 사용 — 실제 Superb API 키가 필요 없다.
+      - name: Unit tests
+        run: python -m pytest tests -q --disable-warnings
+
+      - name: 앱이 실제로 뜨는지 확인 (smoke)
+        run: |
+          python -m streamlit run app.py --server.headless true --server.port 8501 &
+          for i in $(seq 1 30); do
+            curl -sf -o /dev/null http://127.0.0.1:8501/ && echo "앱 부팅 OK" && exit 0
+            sleep 2
+          done
+          echo "앱이 뜨지 않음"; exit 1
+
+  # ---------------------------------------------------------------------------
+  # 실제 Superb API 점검 — 수동 실행(Actions 탭 → Run workflow)일 때만 돈다.
+  #
+  #   * push 마다 돌리지 않는 이유: 호출할 때마다 프로젝트에 점검용 자산(selftest_*)이
+  #     쌓이고, 키가 없는 포크/PR 에서는 무조건 실패하기 때문.
+  #   * 쓰려면 레포 Settings → Secrets and variables → Actions 에
+  #     SUPERB_AI_API_KEY 를 등록해야 한다. 없으면 이 잡은 스스로 건너뛴다.
+  # ---------------------------------------------------------------------------
+  live-api:
+    if: github.event_name == 'workflow_dispatch'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+
+      - name: Install
+        run: pip install -r requirements-ci.txt
+
+      - name: Superb 연동 점검
+        env:
+          SUPERB_AI_API_KEY: ${{ secrets.SUPERB_AI_API_KEY }}
+          SUPERB_AI_TENANT: ${{ vars.SUPERB_AI_TENANT }}
+          SUPERB_DEPLOYMENT_ID: ${{ vars.SUPERB_DEPLOYMENT_ID }}
+          SUPERB_PROJECT_ID: ${{ vars.SUPERB_PROJECT_ID }}
+          SUPERB_DATASET_ID: ${{ vars.SUPERB_DATASET_ID }}
+          SUPERB_CLASS_ID: ${{ vars.SUPERB_CLASS_ID }}
+          SUPERB_ANN_DATA_KEY: answer
+        run: |
+          if [ -z "$SUPERB_AI_API_KEY" ]; then
+            echo "SUPERB_AI_API_KEY 시크릿이 없어 건너뜁니다."
+            exit 0
+          fi
+          python make_samples.py --from-superb --n 4
+          python selftest.py --superb-only

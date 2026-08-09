@@ -1,0 +1,23 @@
+# 비밀 정보 — 절대 커밋 금지
+.env
+.streamlit/secrets.toml
+*.key
+
+# 데이터 / 산출물
+samples/
+_preview/
+*.npz
+MixedWM38*
+
+# 대용량 가중치
+#   기본: 레포에 넣지 않고 GitHub Releases 에 올린 뒤 fetch_weights.py 로 받는다.
+#   Git LFS 로 직접 올리려면 아래 두 줄을 주석 처리하고 .gitattributes 를 사용.
+*.pt
+runs/
+
+# 파이썬
+__pycache__/
+*.pyc
+.pytest_cache/
+.ipynb_checkpoints/
+.DS_Store

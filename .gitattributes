@@ -1,0 +1,9 @@
+# Git LFS 로 모델 가중치를 올릴 때만 사용.
+# (GitHub Releases + fetch_weights.py 방식을 쓴다면 이 파일은 필요 없습니다)
+#
+#   brew install git-lfs && git lfs install
+#   git add .gitattributes && git add swin_multilabel.pt best.pt
+#
+# 주의: 무료 LFS 는 저장 1GB / 대역폭 1GB per month.
+#       105MB 모델이면 클론·재배포 9회 정도면 월 대역폭이 소진됩니다.
+*.pt filter=lfs diff=lfs merge=lfs -text
